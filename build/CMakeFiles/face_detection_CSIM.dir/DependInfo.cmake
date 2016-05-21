@@ -4,9 +4,10 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/goddess/workspace/ObjectDetect_CSIM/CSIM/ObjDetectorC.cpp" "/home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles/face_detection_CSIM.dir/CSIM/ObjDetectorC.cpp.o"
-  "/home/goddess/workspace/ObjectDetect_CSIM/CSIM/adas.cpp" "/home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles/face_detection_CSIM.dir/CSIM/adas.cpp.o"
-  "/home/goddess/workspace/ObjectDetect_CSIM/main.cpp" "/home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles/face_detection_CSIM.dir/main.cpp.o"
+  "/home/goddess/workspace/ObjectDetect_car/CSIM/CompressiveTracker.cpp" "/home/goddess/workspace/ObjectDetect_car/build/CMakeFiles/face_detection_CSIM.dir/CSIM/CompressiveTracker.cpp.o"
+  "/home/goddess/workspace/ObjectDetect_car/CSIM/ObjDetectorC.cpp" "/home/goddess/workspace/ObjectDetect_car/build/CMakeFiles/face_detection_CSIM.dir/CSIM/ObjDetectorC.cpp.o"
+  "/home/goddess/workspace/ObjectDetect_car/CSIM/adas.cpp" "/home/goddess/workspace/ObjectDetect_car/build/CMakeFiles/face_detection_CSIM.dir/CSIM/adas.cpp.o"
+  "/home/goddess/workspace/ObjectDetect_car/main.cpp" "/home/goddess/workspace/ObjectDetect_car/build/CMakeFiles/face_detection_CSIM.dir/main.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

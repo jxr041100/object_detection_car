@@ -50,10 +50,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/goddess/workspace/ObjectDetect_CSIM
+CMAKE_SOURCE_DIR = /home/goddess/workspace/ObjectDetect_car
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/goddess/workspace/ObjectDetect_CSIM/build
+CMAKE_BINARY_DIR = /home/goddess/workspace/ObjectDetect_car/build
 
 #=============================================================================
 # Target rules for target CMakeFiles/face_detection_CSIM.dir
@@ -62,7 +62,7 @@ CMAKE_BINARY_DIR = /home/goddess/workspace/ObjectDetect_CSIM/build
 CMakeFiles/face_detection_CSIM.dir/all:
 	$(MAKE) -f CMakeFiles/face_detection_CSIM.dir/build.make CMakeFiles/face_detection_CSIM.dir/depend
 	$(MAKE) -f CMakeFiles/face_detection_CSIM.dir/build.make CMakeFiles/face_detection_CSIM.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles  1 2 3
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/goddess/workspace/ObjectDetect_car/build/CMakeFiles  1 2 3 4
 	@echo "Built target face_detection_CSIM"
 .PHONY : CMakeFiles/face_detection_CSIM.dir/all
 
@@ -72,9 +72,9 @@ all: CMakeFiles/face_detection_CSIM.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/face_detection_CSIM.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_car/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/face_detection_CSIM.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_car/build/CMakeFiles 0
 .PHONY : CMakeFiles/face_detection_CSIM.dir/rule
 
 # Convenience name for target.

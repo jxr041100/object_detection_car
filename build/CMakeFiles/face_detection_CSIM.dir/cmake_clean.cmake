@@ -2,6 +2,7 @@ FILE(REMOVE_RECURSE
   "CMakeFiles/face_detection_CSIM.dir/main.cpp.o"
   "CMakeFiles/face_detection_CSIM.dir/CSIM/adas.cpp.o"
   "CMakeFiles/face_detection_CSIM.dir/CSIM/ObjDetectorC.cpp.o"
+  "CMakeFiles/face_detection_CSIM.dir/CSIM/CompressiveTracker.cpp.o"
   "face_detection_CSIM.pdb"
   "face_detection_CSIM"
 )

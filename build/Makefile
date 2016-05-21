@@ -42,10 +42,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/cmake-gui
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/goddess/workspace/ObjectDetect_CSIM
+CMAKE_SOURCE_DIR = /home/goddess/workspace/ObjectDetect_car
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/goddess/workspace/ObjectDetect_CSIM/build
+CMAKE_BINARY_DIR = /home/goddess/workspace/ObjectDetect_car/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -72,9 +72,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles /home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_car/build/CMakeFiles /home/goddess/workspace/ObjectDetect_car/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_CSIM/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/goddess/workspace/ObjectDetect_car/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -113,6 +113,30 @@ face_detection_CSIM: cmake_check_build_system
 face_detection_CSIM/fast:
 	$(MAKE) -f CMakeFiles/face_detection_CSIM.dir/build.make CMakeFiles/face_detection_CSIM.dir/build
 .PHONY : face_detection_CSIM/fast
+
+CSIM/CompressiveTracker.o: CSIM/CompressiveTracker.cpp.o
+.PHONY : CSIM/CompressiveTracker.o
+
+# target to build an object file
+CSIM/CompressiveTracker.cpp.o:
+	$(MAKE) -f CMakeFiles/face_detection_CSIM.dir/build.make CMakeFiles/face_detection_CSIM.dir/CSIM/CompressiveTracker.cpp.o
+.PHONY : CSIM/CompressiveTracker.cpp.o
+
+CSIM/CompressiveTracker.i: CSIM/CompressiveTracker.cpp.i
+.PHONY : CSIM/CompressiveTracker.i
+
+# target to preprocess a source file
+CSIM/CompressiveTracker.cpp.i:
+	$(MAKE) -f CMakeFiles/face_detection_CSIM.dir/build.make CMakeFiles/face_detection_CSIM.dir/CSIM/CompressiveTracker.cpp.i
+.PHONY : CSIM/CompressiveTracker.cpp.i
+
+CSIM/CompressiveTracker.s: CSIM/CompressiveTracker.cpp.s
+.PHONY : CSIM/CompressiveTracker.s
+
+# target to generate assembly for a file
+CSIM/CompressiveTracker.cpp.s:
+	$(MAKE) -f CMakeFiles/face_detection_CSIM.dir/build.make CMakeFiles/face_detection_CSIM.dir/CSIM/CompressiveTracker.cpp.s
+.PHONY : CSIM/CompressiveTracker.cpp.s
 
 CSIM/ObjDetectorC.o: CSIM/ObjDetectorC.cpp.o
 .PHONY : CSIM/ObjDetectorC.o
@@ -195,6 +219,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... face_detection_CSIM"
 	@echo "... rebuild_cache"
+	@echo "... CSIM/CompressiveTracker.o"
+	@echo "... CSIM/CompressiveTracker.i"
+	@echo "... CSIM/CompressiveTracker.s"
 	@echo "... CSIM/ObjDetectorC.o"
 	@echo "... CSIM/ObjDetectorC.i"
 	@echo "... CSIM/ObjDetectorC.s"
