@@ -10,19 +10,17 @@
 #include <pthread.h>
 using namespace std;
 
-
-
 #if defined(ANDROID)
 
    #include <android/log.h>
    #include <stdio.h>
 
-   #define LOG_TAG "SKY"
+   #define LOG_TAG "KNERON"
 
-   #define SKY_LOG_ERROR(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-   #define SKY_LOG_INFO(...)  __android_log_print(ANDROID_LOG_INFO , LOG_TAG, __VA_ARGS__)
+   #define KNERON_LOG_ERROR(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+   #define KNERON_LOG_INFO(...)  __android_log_print(ANDROID_LOG_INFO , LOG_TAG, __VA_ARGS__)
 
-   #ifdef SKY_DEBUG_ENABLE
+   #ifdef KNERON_DEBUG_ENABLE
    #define DPRINTF(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
    #else
    #define DPRINTF(...)
@@ -32,23 +30,23 @@ using namespace std;
 
    #include <stdio.h>
 
-   #define SKY_LOG_ERROR(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
-   #define SKY_LOG_INFO(...)  do {printf(__VA_ARGS__); printf("\n");} while(0)
+   #define KNERON_LOG_ERROR(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
+   #define KNERON_LOG_INFO(...)  do {printf(__VA_ARGS__); printf("\n");} while(0)
 
-   #ifdef SKY_DEBUG_ENABLE
-   #define SKY_LOG_DEBUG(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
+   #ifdef KNERON_DEBUG_ENABLE
+   #define KNERON_LOG_DEBUG(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
    #else
-   #define SKY_LOG_DEBUG(...)
+   #define KNERON_LOG_DEBUG(...)
    #endif   
 
 #elif defined(__linux__)
 
    #include <stdio.h>
 
-   #define SKY_LOG_ERROR(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
-   #define SKY_LOG_INFO(...)  do {printf(__VA_ARGS__); printf("\n");} while(0)
+   #define KNERON_LOG_ERROR(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
+   #define KNERON_LOG_INFO(...)  do {printf(__VA_ARGS__); printf("\n");} while(0)
 
-   #ifdef SKY_DEBUG_ENABLE
+   #ifdef KNERON_DEBUG_ENABLE
    #define DPRINTF(...) do {printf(__VA_ARGS__); printf("\n");} while(0)
    #else
    #define DPRINTF(...)
@@ -68,7 +66,9 @@ using namespace std;
     #define IPRINTF(...)  do {printf(__VA_ARGS__); printf("\n");} while(0)
     #define EPRINTF(...)  do {printf(__VA_ARGS__); printf("\n");} while(0)
 #endif
+
 #define MULTITHREAD
+#define ENABLE_MASK
 
 void *buffer;
 typedef struct _stripRange {
@@ -98,7 +98,7 @@ uint32_t MIN(uint32_t a,uint32_t b)
     return a<b?a:b;
 }
 
-bool init_face_detection(uint32_t Height,uint32_t Width,cvFacedetectParameters *param)
+bool init_object_detection(uint32_t Height,uint32_t Width,cvFacedetectParameters *param)
 {   
     param->maxSize = 400;
     param->minSize = 30;
@@ -125,7 +125,7 @@ bool init_face_detection(uint32_t Height,uint32_t Width,cvFacedetectParameters *
     return true;
 }
 
-bool face_detection_process(uint8_t * __restrict src,                       
+bool object_detection_process(uint8_t * __restrict src,                       
                             uint32_t srcWidth, 
                             uint32_t srcHeight, 
                             uint32_t srcStride,
@@ -137,7 +137,9 @@ bool face_detection_process(uint8_t * __restrict src,
 {
     uint32_t r=1;
     *resultFaceNum=0;   
-    r=icvFaceDetection(src,mask,srcWidth, srcHeight, srcStride, para, maxDetectedFaceNum, resultFaceNum, result, buffer);      
+    r=FaceDetection(src,mask,srcWidth, srcHeight, srcStride, para, maxDetectedFaceNum, resultFaceNum, result, buffer);      
+
+#undef ENABLE_MASK
 #ifdef ENABLE_MASK	  
 	if(*resultFaceNum>0)
 	{
@@ -164,7 +166,7 @@ bool face_detection_process(uint8_t * __restrict src,
 	return r>0?true:false;
 }
 
-void deinit_face_detection()
+void deinit_object_detection()
 {
     pthread_mutex_destroy(&mutex);
 	free(buffer);
@@ -178,7 +180,7 @@ int32_t absdef(int32_t a)
         return -a;
 }
 
-int32_t icvSimilarRect(icvRect *r1, icvRect *r2)
+int32_t SimilarRect(icvRect *r1, icvRect *r2)
 {
     float d;    
     if(r1->width<=r2->width)
@@ -197,7 +199,7 @@ int32_t icvSimilarRect(icvRect *r1, icvRect *r2)
 
 }
 
-int32_t icvMergePartition(icvRect * rectList, uint32_t rectNum, uint32_t *buff)
+int32_t MergePartition(icvRect * rectList, uint32_t rectNum, uint32_t *buff)
 {
 
     uint32_t i,j,k; 
@@ -227,7 +229,7 @@ int32_t icvMergePartition(icvRect * rectList, uint32_t rectNum, uint32_t *buff)
             if(computeMark[i]==0)
             {
                 r2=(rectList+i);
-                k=icvSimilarRect(r1,r2);  
+                k=SimilarRect(r1,r2);  
                 p[i]=k; 
                 totalNum+=k;
             }    
@@ -250,7 +252,7 @@ int32_t icvMergePartition(icvRect * rectList, uint32_t rectNum, uint32_t *buff)
                         if(computeMark[j]==0 && p[j]==0)
                         {
                             r2=(rectList+j);
-                            k=icvSimilarRect(r1,r2);  
+                            k=SimilarRect(r1,r2);  
                             p[j]=k; 
                             totalNum+=k;
                         }    
@@ -277,7 +279,7 @@ int32_t icvMergePartition(icvRect * rectList, uint32_t rectNum, uint32_t *buff)
     return classIdx; 
 }
 
-uint32_t icvGrouprectangular(icvRect *rectList, uint32_t rectNum, uint32_t groupThreshold, icvRect *groupResult)
+uint32_t Grouprectangular(icvRect *rectList, uint32_t rectNum, uint32_t groupThreshold, icvRect *groupResult)
 {
     int32_t resultFaceN=0;    
     if( groupThreshold <= 0 || rectNum==0 )
@@ -292,7 +294,7 @@ uint32_t icvGrouprectangular(icvRect *rectList, uint32_t rectNum, uint32_t group
     buf = (uint8_t*)buf + 12 * rectNum;
 
     uint32_t *labels=(uint32_t *)buf;
-    uint32_t nRecClass = icvMergePartition(rectList, rectNum, labels); //start from 1
+    uint32_t nRecClass = MergePartition(rectList, rectNum, labels); //start from 1
 
     uint32_t i,j;    
     uint32_t *rectMergNum =(uint32_t *)buf+rectNum; 
@@ -426,7 +428,7 @@ uint8_t  QuicksortwIdx(uint32_t *src, uint32_t *idx, uint32_t numItems)
     return 0;
 }
 
-void icvPickFace(uint32_t detFaceNum, uint32_t resultFaceNum, icvRect *buff, cvFacedetectResult *result)
+void PickFace(uint32_t detFaceNum, uint32_t resultFaceNum, icvRect *buff, cvFacedetectResult *result)
 {
     uint32_t widArr[1500]; //because can't more than 1500 faces in one image    
     uint32_t dstwidIdx[1500];
@@ -449,7 +451,7 @@ void icvPickFace(uint32_t detFaceNum, uint32_t resultFaceNum, icvRect *buff, cvF
 }
 
 
-int32_t icvRunFeature( const ifcvFeature *feature, uint32_t offset, int32_t * confidance, int sumStride, uint32_t x,uint16_t num_n_stages)
+int32_t RunFeature( const ifcvFeature *feature, uint32_t offset, int32_t * confidance, int sumStride, uint32_t x,uint16_t num_n_stages)
 {	
     int32_t nstages = num_n_stages;
     int32_t stage;
@@ -546,7 +548,7 @@ void * processStrip(void *_range)
     		if(myRange->mask[y*myRange->processingRectSizeWidth+x]==0)
     			continue;
     	    int offset = y * ( myRange->sumStride) + x;
-    	    int resultRunFearure = icvRunFeature( myRange->feature, offset, &confidance, myRange->sumStride,x);	
+    	    int resultRunFearure = RunFeature( myRange->feature, offset, &confidance, myRange->sumStride,x);	
     	    if( resultRunFearure > 0 ){
     	        cf.topx = uint32_t((x* myRange->sFactor) + 0.5);
     	        cf.topy = uint32_t((y* myRange->sFactor) + 0.5);
@@ -563,7 +565,7 @@ void * processStrip(void *_range)
     return myRange;
 }
 
-uint32_t icvFaceDetection(uint8_t * __restrict src,
+uint32_t FaceDetection(uint8_t * __restrict src,
 						  uint8_t * __restrict srcMask,                          
                           uint32_t srcWidth, 
                           uint32_t srcHeight, 
@@ -607,7 +609,7 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
     srcHisteq = (uint8_t*)buf;
     buf = (uint8_t*)buf + srcStride * srcHeight * sizeof(uint8_t) + 16; //for 128 bit alignemnt
     srcHisteq = (uint8_t*)((size_t)srcHisteq + (16 - (size_t)srcHisteq % 16));
-	icvhistogramEqualizeImage( src, srcWidth, srcHeight, srcStride, srcHisteq);
+	histogramEqualizeImage( src, srcWidth, srcHeight, srcStride, srcHisteq);
     feature = (ifcvFeature*)buf;
     buf = (uint8_t*)buf + FACE_MODEL_N_FEATURE * sizeof(ifcvFeature);
     nCandidate = 0;
@@ -639,14 +641,12 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
 		mask = (uint8_t*)buf;
 		scaleImgStride = scaleImgWidth;      
 		buf = (uint8_t*)buf + scaleImgStride * scaleImgHeight * sizeof(uint8_t) + 16; //128 bit aligned
-		mask = (uint8_t*)((size_t)mask + (16 - (size_t)mask % 16));
-
-        
+		mask = (uint8_t*)((size_t)mask + (16 - (size_t)mask % 16));        
 
 		if( sFactor !=1.f) 
 		{
-            cvScaleDownMNu8Q( srcHisteq, srcWidth, srcHeight, srcStride, scaleImg, scaleImgWidth, scaleImgHeight, scaleImgStride);
-            cvScaleDownMNu8Q( srcMask, srcWidth, srcHeight, srcStride, mask, scaleImgWidth, scaleImgHeight, scaleImgStride);
+            scaleDownMN( srcHisteq, srcWidth, srcHeight, srcStride, scaleImg, scaleImgWidth, scaleImgHeight, scaleImgStride);
+            scaleDownMN( srcMask, srcWidth, srcHeight, srcStride, mask, scaleImgWidth, scaleImgHeight, scaleImgStride);
 		}
         else{
             scaleImgStride = srcStride;
@@ -655,12 +655,11 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
         }
 
         sumStride= (scaleImgWidth+1) * sizeof(uint16_t);
-        //sumStride = (sumStride + 16 - 1) & -16; 
         sum = (uint16_t*)buf;
         buf = (uint8_t*)buf + sumStride * (scaleImgHeight+1) + 16;
         sum = (uint16_t*)((size_t)sum + (16 - (size_t)sum % 16));
 		
-        cvIntegrateImageu8( scaleImg, scaleImgWidth, scaleImgHeight, scaleImgStride, sum, sumStride);
+        IntegrateImage( scaleImg, scaleImgWidth, scaleImgHeight, scaleImgStride, sum, sumStride);
 
         sumStride =  sumStride/sizeof(uint16_t);
 
@@ -684,9 +683,7 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
 		
 		vector<pthread_t> threads(stripCount);
 		vector<Range> r(stripCount);
-      
 
-        //cout << "number of strip count =" << stripCount << endl;
        // DPRINTF("the number of strip count is = %d/n",stripCount);
 		for(int t=0; t<stripCount; t++)
 		{
@@ -709,10 +706,7 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
 			r[t].feature = feature;
 			r[t].mask = mask;
 
-            //cout << " now creating thread " << t << endl;
 			int rc = pthread_create(&threads[t], NULL, processStrip, (void *)&r[t]);
-            //cout << " done creating thread " << t << endl;
-
 			if (rc)
 			{
 				printf("ERROR; return code from pthread_create() is %d\n", rc);
@@ -720,12 +714,9 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
 			}
 		}
         void *status;
-        //cout << "pthread ~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         for(int t=0; t<stripCount; t++) 
         {
-            //cout << "pthread exit " << t << endl;
             int rc = pthread_join(threads[t], NULL);
-            //cout << "done pthread exit " << t << endl;
             if (rc) 
             {
                 printf("ERROR; return code from pthread_join() is %d\n", rc);
@@ -733,21 +724,19 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
             }
         }
  #else
-        //foundCandidate = 0;
         for(y = 0; y < (uint32_t)processingRectSizeHeight; y += stepSize)
         {
             for(x = 0; x < (uint32_t)processingRectSizeWidth; x += stepSize )
             {
        
                 offset = y * (sumStride) + x;
-                resultRunFearure = icvRunFeature( feature, offset, &confidance, sumStride,x);	
+                resultRunFearure = RunFeature( feature, offset, &confidance, sumStride,x);	
                 if( resultRunFearure > 0 ){
                     cf.topx = uint32_t((x*sFactor) + 0.5);
                     cf.topy = uint32_t((y*sFactor) + 0.5);
                     cf.width = windowSizeWidth;
                     cf.height = windowSizeHeight;
                     candidateResult[nCandidate++] = cf;
-                    //foundCandidate = 1;
                 } else if(resultRunFearure==0) 
                 	x += stepSize;
       		}
@@ -760,7 +749,7 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
 
     feature = NULL;	
     icvRect *buff=(icvRect *)buffer;
-        uint32_t detFaceNum=icvGrouprectangular( candidateResult, nCandidate,minNeighbors, buff);
+        uint32_t detFaceNum=Grouprectangular( candidateResult, nCandidate,minNeighbors, buff);
     if(detFaceNum<= maxDetectedFaceNum){
         *resultFaceNum=detFaceNum;
         for(uint32_t i=0;i<detFaceNum;i++)
@@ -772,14 +761,14 @@ uint32_t icvFaceDetection(uint8_t * __restrict src,
         }
     }
     else{
-        icvPickFace(detFaceNum,maxDetectedFaceNum, buff,result);
+        PickFace(detFaceNum,maxDetectedFaceNum, buff,result);
         *resultFaceNum = maxDetectedFaceNum;
     }
     return 1;   
 }
 
 
-void icvhistogramEqualizeImage( const uint8_t * __restrict src, uint32_t srcWidth, uint32_t srcHeight, uint32_t srcStride, uint8_t * __restrict dst)
+void histogramEqualizeImage( const uint8_t * __restrict src, uint32_t srcWidth, uint32_t srcHeight, uint32_t srcStride, uint8_t * __restrict dst)
 {
     uint32_t i, j;
     uint32_t histogram[256];
@@ -808,7 +797,7 @@ void icvhistogramEqualizeImage( const uint8_t * __restrict src, uint32_t srcWidt
     }	
 }
 
-void cvIntegrateImageu8( const uint8_t* __restrict src,
+void IntegrateImage( const uint8_t* __restrict src,
                                   unsigned int srcWidth, 
                                   unsigned int srcHeight,
                                   unsigned int srcStride,
@@ -881,7 +870,7 @@ static const uint32_t mn_div_table[401] =
 };
 
 
-void cvScaleDownMNu8Q(const uint8_t* __restrict src,
+void scaleDownMN(const uint8_t* __restrict src,
                       uint32_t                  srcWidth,
                       uint32_t                  srcHeight,
                       uint32_t                  srcStride,

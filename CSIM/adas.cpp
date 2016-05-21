@@ -15,8 +15,7 @@ int adas_car_detect(uint8_t *frame, int width, int height, CarDistance *distance
 {
 	 cvFacedetectResult result[25];  
 	
-	 int ret = face_detection_process(frame, width, height, width, &detParam,  20, count, result);
-	 //int N = (int)*count
+	 int ret = object_detection_process(frame, width, height, width, &detParam,  20, count, result);
 	 for( uint32_t i = 0 ; i < *count; i++)
 	 {
 		 distance[i].x = result[i].topx;
@@ -35,14 +34,14 @@ int adas_car_detect(uint8_t *frame, CarDistance *distance, uint32_t *count)
 
 void adas_free()
 {
-	deinit_face_detection();
+	deinit_object_detection();
 }
 
 
 
 int adas_init(int width, int height)
 {
-	bool ret = init_face_detection(height, width, &detParam);
+	bool ret = init_object_detection(height, width, &detParam);
 	_width = width;
 	_height = height;
 	if(ret == false)
